@@ -54,3 +54,21 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Redis
+dump.rdb
+
+# TypeScript
+*.tsbuildinfo
+
+# Postman
+postman/
+.postman/
+
+# SunLint
+.sunlint-eslint.config.js
+
+# Custom ignored files
+NestJS Tutorial DB.session.sql
+public/
+public/uploads/
