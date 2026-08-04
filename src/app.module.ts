@@ -7,7 +7,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ThrottlerModule } from '@nestjs/throttler';
-
+import { AttachmentsModule } from './attachments/attachments.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { UsersModule } from './users/users.module';
 
 const THROTTLE_TTL = 60000;
 const THROTTLE_LIMIT = 5;
@@ -21,6 +24,11 @@ const THROTTLE_LIMIT = 5;
       limit: THROTTLE_LIMIT,
     }]),
 
+    // Cấu hình mở cửa thư mục public
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/public', // Đường dẫn khi lên trình duyệt sẽ có dạng http://localhost:3000/public/...
+    }),
 
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -46,6 +54,10 @@ const THROTTLE_LIMIT = 5;
     }),
 
     AuthModule,
+
+    AttachmentsModule,
+
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
