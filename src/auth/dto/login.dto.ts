@@ -3,10 +3,10 @@ import { i18nValidationMessage } from 'nestjs-i18n';
 
 export class LoginDto {
   @IsEmail({}, { message: i18nValidationMessage('validation.INVALID_EMAIL') })
-  @IsNotEmpty()
+  @IsNotEmpty({ message: i18nValidationMessage('validation.NOT_EMPTY') })
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: i18nValidationMessage('validation.IS_STRING') })
+  @IsNotEmpty({ message: i18nValidationMessage('validation.NOT_EMPTY') })
   password: string;
 }

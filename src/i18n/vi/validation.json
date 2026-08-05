@@ -1,5 +1,9 @@
 {
   "INVALID_EMAIL": "Email không đúng định dạng",
   "MIN_LENGTH": "Mật khẩu phải có ít nhất 6 ký tự",
-  "INVALID_IMAGE": "Chỉ chấp nhận file ảnh! (Nhận được: {mimetype} - {ext})"
+  "INVALID_IMAGE": "Chỉ chấp nhận file ảnh! (Nhận được: {mimetype} - {ext})",
+  "NOT_EMPTY": "{property} không được để trống",
+  "IS_STRING": "{property} phải là chuỗi văn bản",
+  "IS_EMAIL": "{property} không đúng định dạng email",
+  "IS_ARRAY": "{property} phải là một mảng"
 }

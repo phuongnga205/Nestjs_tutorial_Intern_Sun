@@ -1,0 +1,7 @@
+{
+    "NOT_FOUND_USER": "Không tìm thấy User",
+    "NOT_FOUND_ARTICLE": "Không tìm thấy bài viết",
+    "FORBIDDEN_UPDATE": "Bạn không có quyền sửa bài viết này",
+    "FORBIDDEN_DELETE": "Bạn không có quyền xóa bài viết này",
+    "DELETE_SUCCESS": "Đã xóa bài viết thành công"
+}

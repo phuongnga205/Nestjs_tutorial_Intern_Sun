@@ -1,0 +1,7 @@
+{
+    "NOT_FOUND_USER": "User not found",
+    "NOT_FOUND_ARTICLE": "Article not found",
+    "FORBIDDEN_UPDATE": "You are not authorized to update this article",
+    "FORBIDDEN_DELETE": "You are not authorized to delete this article",
+    "DELETE_SUCCESS": "Article deleted successfully"
+}
