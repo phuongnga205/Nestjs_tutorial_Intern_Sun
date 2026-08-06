@@ -1,0 +1,7 @@
+{
+    "NOT_FOUND_USER": "Không tìm thấy người dùng",
+    "NOT_FOUND_ARTICLE": "Không tìm thấy bài viết",
+    "NOT_FOUND_COMMENT": "Không tìm thấy bình luận",
+    "FORBIDDEN_DELETE": "Bạn không có quyền xóa bình luận này",
+    "DELETE_SUCCESS": "Đã xóa bình luận thành công"
+}

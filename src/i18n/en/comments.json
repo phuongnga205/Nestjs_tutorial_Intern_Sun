@@ -1,0 +1,7 @@
+{
+    "NOT_FOUND_USER": "User not found",
+    "NOT_FOUND_ARTICLE": "Article not found",
+    "NOT_FOUND_COMMENT": "Comment not found",
+    "FORBIDDEN_DELETE": "You are not authorized to delete this comment",
+    "DELETE_SUCCESS": "Comment deleted successfully"
+}
