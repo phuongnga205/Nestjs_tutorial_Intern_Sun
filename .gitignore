@@ -79,3 +79,12 @@ eslint.config.mjs
 
 # Uploaded Files
 public/uploads/
+
+# Temporary and test files
+*.test
+*.ts.test
+*.bak
+*.tmp
+*.swp
+*~
+.DS_Store

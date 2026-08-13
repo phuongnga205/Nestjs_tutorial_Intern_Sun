@@ -1,8 +1,4 @@
-import {
-    Injectable,
-    BadRequestException,
-    Inject,
-} from '@nestjs/common';
+import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
@@ -17,73 +13,87 @@ const TOKEN_TTL = 3600;
 
 @Injectable()
 export class AuthService {
-    constructor(
-        @Inject('UserRepository')
-        private readonly userRepository: any,
-        private readonly jwtService: JwtService,
-        @Inject('TOKEN_BLACKLIST_SERVICE')
-        private readonly authUtils: any,
-    ) { }
+  constructor(
+    @Inject('USERS_REPOSITORY')
+    private readonly userRepository: any,
+    private readonly jwtService: JwtService,
+    @Inject('TOKEN_BLACKLIST_SERVICE')
+    private readonly authUtils: {
+      revokeToken: (token: string, ttl: number) => Promise<void>;
+    },
+  ) {}
 
-    async register(registerDto: RegisterDto) {
-        const { username, email, password } = registerDto;
+  async register(registerDto: RegisterDto) {
+    const { username, email, password } = registerDto;
 
-        const existingUser = await this.userRepository.findOne({
-            where: [{ email }, { username }],
-        });
+    const existingUser = await this.userRepository.findOne({
+      where: [{ email }, { username }],
+    });
 
-        if (existingUser) {
-            throw new BadRequestException(I18nContext.current()!.t('auth.EMAIL_OR_USERNAME_EXISTS'));
-        }
-
-        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-        const newUser = this.userRepository.create({
-            username,
-            email,
-            password: hashedPassword,
-        });
-
-        await this.userRepository.save(newUser);
-
-        return {
-            message: I18nContext.current()!.t('auth.REGISTER_SUCCESS'),
-        };
+    if (existingUser) {
+      throw new BadRequestException(
+        I18nContext.current()!.t('auth.EMAIL_OR_USERNAME_EXISTS'),
+      );
     }
 
-    async login(loginDto: LoginDto) {
-        const { email, password } = loginDto;
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const newUser = this.userRepository.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
 
-        const user = await this.userRepository.findOne({ where: { email } });
-        if (!user) throw new BadRequestException(I18nContext.current()!.t('auth.INVALID_CREDENTIALS'));
+    await this.userRepository.save(newUser);
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) throw new BadRequestException(I18nContext.current()!.t('auth.INVALID_CREDENTIALS'));
+    return {
+      message: I18nContext.current()!.t('auth.REGISTER_SUCCESS'),
+    };
+  }
 
-        const payload = { id: user.id, username: user.username };
-        const token = this.jwtService.sign(payload, { expiresIn: EXPIRES_IN });
+  async login(loginDto: LoginDto) {
+    const { email, password } = loginDto;
 
-        return {
-            message: I18nContext.current()!.t('auth.LOGIN_SUCCESS'),
-            token,
-        };
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user)
+      throw new BadRequestException(
+        I18nContext.current()!.t('auth.INVALID_CREDENTIALS'),
+      );
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      throw new BadRequestException(
+        I18nContext.current()!.t('auth.INVALID_CREDENTIALS'),
+      );
+
+    const payload = { id: user.id, username: user.username };
+    const token = this.jwtService.sign(payload, { expiresIn: EXPIRES_IN });
+
+    return {
+      message: I18nContext.current()!.t('auth.LOGIN_SUCCESS'),
+      token,
+    };
+  }
+
+  async getProfile(userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    return {
+      message: I18nContext.current()!.t('auth.GET_PROFILE_SUCCESS'),
+      user: plainToInstance(UserResponseDto, user, {
+        excludeExtraneousValues: true,
+      }),
+    };
+  }
+
+  async terminateSession(token?: string) {
+    if (token) {
+      const decoded: { exp?: number } | null = this.jwtService.decode(token);
+      const ttl = decoded?.exp
+        ? Math.max(0, decoded.exp - Math.floor(Date.now() / 1000))
+        : TOKEN_TTL;
+      await this.authUtils.revokeToken(token, ttl);
     }
-
-    async getProfile(userId: number) {
-        const user = await this.userRepository.findOne({ where: { id: userId } });
-        return {
-            message: I18nContext.current()!.t('auth.GET_PROFILE_SUCCESS'),
-            user: plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true }),
-        };
-    }
-
-    async terminateSession(token?: string) {
-        if (token) {
-            const decoded = this.jwtService.decode(token) as any;
-            const ttl = decoded?.exp ? Math.max(0, decoded.exp - Math.floor(Date.now() / 1000)) : TOKEN_TTL;
-            await this.authUtils.revokeToken(token, ttl);
-        }
-        return {
-            message: I18nContext.current()!.t('auth.SESSION_ENDED'),
-        };
-    }
+    return {
+      message: I18nContext.current()!.t('auth.SESSION_ENDED'),
+    };
+  }
 }

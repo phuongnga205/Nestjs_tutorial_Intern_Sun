@@ -1,0 +1,5 @@
+{
+  "INVALID_EMAIL": "Invalid email format",
+  "MIN_LENGTH": "Password must be at least 6 characters long",
+  "INVALID_IMAGE": "Only image files are allowed! (Received: {mimetype} - {ext})"
+}

@@ -11,6 +11,7 @@ import { AttachmentsModule } from './attachments/attachments.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UsersModule } from './users/users.module';
+import { DatabaseModule } from './database/database.module';
 
 const THROTTLE_TTL = 60000;
 const THROTTLE_LIMIT = 5;
@@ -19,10 +20,12 @@ const THROTTLE_LIMIT = 5;
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
 
-    ThrottlerModule.forRoot([{
-      ttl: THROTTLE_TTL,
-      limit: THROTTLE_LIMIT,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: THROTTLE_TTL,
+        limit: THROTTLE_LIMIT,
+      },
+    ]),
 
     // Cấu hình mở cửa thư mục public
     ServeStaticModule.forRoot({
@@ -58,8 +61,10 @@ const THROTTLE_LIMIT = 5;
     AttachmentsModule,
 
     UsersModule,
+
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
