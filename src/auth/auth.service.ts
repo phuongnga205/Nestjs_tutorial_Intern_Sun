@@ -5,7 +5,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/user-response.dto';
-import { I18nContext } from 'nestjs-i18n';
+import { t } from '../utils/i18n.util';
 
 const SALT_ROUNDS = 10;
 const EXPIRES_IN = '1h';
@@ -31,9 +31,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new BadRequestException(
-        I18nContext.current()!.t('auth.EMAIL_OR_USERNAME_EXISTS'),
-      );
+      throw new BadRequestException(t('auth.EMAIL_OR_USERNAME_EXISTS'));
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
@@ -46,7 +44,7 @@ export class AuthService {
     await this.userRepository.save(newUser);
 
     return {
-      message: I18nContext.current()!.t('auth.REGISTER_SUCCESS'),
+      message: t('auth.REGISTER_SUCCESS'),
     };
   }
 
@@ -54,22 +52,16 @@ export class AuthService {
     const { email, password } = loginDto;
 
     const user = await this.userRepository.findOne({ where: { email } });
-    if (!user)
-      throw new BadRequestException(
-        I18nContext.current()!.t('auth.INVALID_CREDENTIALS'),
-      );
+    if (!user) throw new BadRequestException(t('auth.INVALID_CREDENTIALS'));
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      throw new BadRequestException(
-        I18nContext.current()!.t('auth.INVALID_CREDENTIALS'),
-      );
+    if (!isMatch) throw new BadRequestException(t('auth.INVALID_CREDENTIALS'));
 
     const payload = { id: user.id, username: user.username };
     const token = this.jwtService.sign(payload, { expiresIn: EXPIRES_IN });
 
     return {
-      message: I18nContext.current()!.t('auth.LOGIN_SUCCESS'),
+      message: t('auth.LOGIN_SUCCESS'),
       token,
     };
   }
@@ -77,7 +69,7 @@ export class AuthService {
   async getProfile(userId: number) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     return {
-      message: I18nContext.current()!.t('auth.GET_PROFILE_SUCCESS'),
+      message: t('auth.GET_PROFILE_SUCCESS'),
       user: plainToInstance(UserResponseDto, user, {
         excludeExtraneousValues: true,
       }),
@@ -92,8 +84,5 @@ export class AuthService {
         : TOKEN_TTL;
       await this.authUtils.revokeToken(token, ttl);
     }
-    return {
-      message: I18nContext.current()!.t('auth.SESSION_ENDED'),
-    };
   }
 }

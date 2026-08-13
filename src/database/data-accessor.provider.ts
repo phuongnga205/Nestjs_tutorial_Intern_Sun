@@ -4,6 +4,7 @@ import { DataSource, EntityManager, DeepPartial, FindOneOptions, FindManyOptions
 export interface IDataAccessorContext {
   fetchRecord<T>(entityClass: EntityTarget<T>, options: FindOneOptions<T>): Promise<T | null>;
   fetchRecords<T>(entityClass: EntityTarget<T>, options?: FindManyOptions<T>): Promise<T[]>;
+  fetchRecordsAndCount<T>(entityClass: EntityTarget<T>, options?: FindManyOptions<T>): Promise<[T[], number]>;
   storeRecord<T>(entityClass: EntityTarget<T>, entity: T): Promise<T>;
   archiveRecord<T>(entityClass: EntityTarget<T>, entity: T): Promise<T>;
   buildRecord<T>(entityClass: EntityTarget<T>, entityLike: DeepPartial<T>): T;
@@ -18,6 +19,10 @@ class DataAccessorContext implements IDataAccessorContext {
 
   async fetchRecords<T>(entityClass: EntityTarget<T>, options?: FindManyOptions<T>): Promise<T[]> {
     return this.manager.find(entityClass as any, options as any) as unknown as Promise<T[]>;
+  }
+
+  async fetchRecordsAndCount<T>(entityClass: EntityTarget<T>, options?: FindManyOptions<T>): Promise<[T[], number]> {
+    return this.manager.findAndCount(entityClass as any, options as any) as unknown as Promise<[T[], number]>;
   }
 
   async storeRecord<T>(entityClass: EntityTarget<T>, entity: T): Promise<T> {

@@ -12,6 +12,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
+import { ArticlesModule } from './articles/articles.module';
 
 const THROTTLE_TTL = 60000;
 const THROTTLE_LIMIT = 5;
@@ -41,7 +42,7 @@ const THROTTLE_LIMIT = 5;
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_DATABASE || 'nestjs_tutorial',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false,
+      synchronize: true,
     }),
 
     I18nModule.forRoot({
@@ -63,6 +64,7 @@ const THROTTLE_LIMIT = 5;
     UsersModule,
 
     DatabaseModule,
+    ArticlesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

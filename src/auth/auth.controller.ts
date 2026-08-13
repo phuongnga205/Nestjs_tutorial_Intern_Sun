@@ -15,6 +15,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { t } from '../utils/i18n.util';
 
 interface AuthenticatedRequest extends ExpressRequest {
   user: { id: number; username: string };
@@ -26,8 +27,17 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  async register(
+    @Body() registerDto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    });
+    const user = await this.authService.register(registerDto);
+    return user;
   }
 
   @UseGuards(ThrottlerGuard)
@@ -42,13 +52,23 @@ export class AuthController {
       Pragma: 'no-cache',
       Expires: '0',
     });
-    return this.authService.login(loginDto);
+    const user = await this.authService.login(loginDto);
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getProfile(@Request() req: AuthenticatedRequest) {
-    return this.authService.getProfile(req.user.id);
+  async getProfile(
+    @Request() req: AuthenticatedRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+    });
+    const user = await this.authService.getProfile(req.user.id);
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -72,6 +92,10 @@ export class AuthController {
     }
 
     const token = req.headers.authorization?.split(' ')[1];
-    return this.authService.terminateSession(token);
+    await this.authService.terminateSession(token);
+    
+    return {
+      message: t('auth.SESSION_ENDED'),
+    };
   }
 }

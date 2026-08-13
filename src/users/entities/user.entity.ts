@@ -6,7 +6,9 @@ import {
   UpdateDateColumn,
   JoinTable,
   ManyToMany,
+  OneToMany
 } from 'typeorm';
+import { Article } from '../../articles/entities/article.entity';
 
 @Entity('users')
 export class User {
@@ -49,4 +51,13 @@ export class User {
   // Danh sách những người đang theo dõi User này
   @ManyToMany(() => User, (user) => user.following)
   followers: User[];
+
+  //Danh sách bài viết của User này
+  @OneToMany(() => Article, (article) => article.author)
+  articles: Article[];
+
+  // Khai báo thả tim
+  @ManyToMany(() => Article)
+  @JoinTable({ name: 'user_favorites' }) // Tên bảng trung gian
+  favorites: Article[];
 }
