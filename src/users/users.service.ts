@@ -1,6 +1,6 @@
 import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { I18nContext } from 'nestjs-i18n';
+import { t } from '../utils/i18n.util';
 
 import { AttachmentsService } from '../attachments/attachments.service';
 import { DataAccessorProvider, IDataAccessorContext } from '../database/data-accessor.provider';
@@ -40,9 +40,7 @@ export class UsersService {
         where: { id: userId },
       });
       if (!user) {
-        throw new NotFoundException(
-          I18nContext.current()!.t('users.USER_NOT_FOUND'),
-        );
+        throw new NotFoundException(t('users.USER_NOT_FOUND'));
       }
 
       let imageUrl: string | null = null;
@@ -71,12 +69,10 @@ export class UsersService {
       }
 
       return {
-        user: {
-          username: user.username,
-          email: user.email,
-          bio: user.bio,
-          image: this.getFullUrl(imageUrl),
-        },
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+        image: this.getFullUrl(imageUrl),
       };
     });
   }
@@ -89,9 +85,7 @@ export class UsersService {
       });
 
       if (!targetUser) {
-        throw new NotFoundException(
-          I18nContext.current()!.t('users.USER_NOT_FOUND'),
-        );
+        throw new NotFoundException(t('users.USER_NOT_FOUND'));
       }
 
       const followersList = targetUser.followers || [];
@@ -107,12 +101,10 @@ export class UsersService {
       });
 
       return {
-        profile: {
-          username: targetUser.username,
-          bio: targetUser.bio,
-          image: attachment ? this.getFullUrl(attachment.url) : null,
-          following: isFollowing,
-        },
+        username: targetUser.username,
+        bio: targetUser.bio,
+        image: attachment ? this.getFullUrl(attachment.url) : null,
+        following: isFollowing,
       };
     });
   }
@@ -120,9 +112,7 @@ export class UsersService {
   async followUser(currentUserId: number, targetUsername: string) {
     return this.dataAccessor.execute(async (txn: IDataAccessorContext) => {
       if (currentUserId.toString() === targetUsername) {
-        throw new BadRequestException(
-          I18nContext.current()!.t('users.CANNOT_FOLLOW_SELF'),
-        );
+        throw new BadRequestException(t('users.CANNOT_FOLLOW_SELF'));
       }
 
       const currentUser = await txn.fetchRecord(User, {
@@ -131,18 +121,14 @@ export class UsersService {
       });
 
       if (!currentUser) {
-        throw new NotFoundException(
-          I18nContext.current()!.t('users.CURRENT_USER_NOT_FOUND'),
-        );
+        throw new NotFoundException(t('users.CURRENT_USER_NOT_FOUND'));
       }
 
       const targetUser = await txn.fetchRecord(User, {
         where: { username: targetUsername },
       });
       if (!targetUser) {
-        throw new NotFoundException(
-          I18nContext.current()!.t('users.USER_NOT_FOUND'),
-        );
+        throw new NotFoundException(t('users.USER_NOT_FOUND'));
       }
 
       const followingList = currentUser.following || [];
@@ -167,18 +153,14 @@ export class UsersService {
       });
 
       if (!currentUser) {
-        throw new NotFoundException(
-          I18nContext.current()!.t('users.CURRENT_USER_NOT_FOUND'),
-        );
+        throw new NotFoundException(t('users.CURRENT_USER_NOT_FOUND'));
       }
 
       const targetUser = await txn.fetchRecord(User, {
         where: { username: targetUsername },
       });
       if (!targetUser) {
-        throw new NotFoundException(
-          I18nContext.current()!.t('users.USER_NOT_FOUND'),
-        );
+        throw new NotFoundException(t('users.USER_NOT_FOUND'));
       }
 
       if (currentUser.following) {

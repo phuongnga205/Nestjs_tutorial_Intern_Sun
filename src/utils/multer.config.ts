@@ -1,8 +1,8 @@
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { BadRequestException } from '@nestjs/common';
-import { I18nContext } from 'nestjs-i18n';
 import { Request } from 'express';
+import { t } from './i18n.util';
 
 export const multerOptions = {
   // Cấu hình nơi lưu trữ
@@ -44,7 +44,7 @@ export const multerOptions = {
     } else {
       return cb(
         new BadRequestException(
-          I18nContext.current()?.t('validation.INVALID_IMAGE', {
+          t('validation.INVALID_IMAGE', {
             args: { mimetype: file.mimetype, ext },
           }) || `Invalid image file! (Received: ${file.mimetype} - ${ext})`,
         ),

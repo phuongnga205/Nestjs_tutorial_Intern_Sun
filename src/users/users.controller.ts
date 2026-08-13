@@ -47,7 +47,8 @@ export class UsersController {
     )
     file: Express.Multer.File,
   ) {
-    return this.usersService.updateUser(req.user.id, file, updateData);
+    const user = await this.usersService.updateUser(req.user.id, file, updateData);
+    return { user };
   }
 
   // 2. Lấy thông tin hồ sơ
@@ -57,7 +58,8 @@ export class UsersController {
     @Request() req: AuthenticatedRequest,
     @Param('username') username: string,
   ) {
-    return this.usersService.getProfile(req.user.id, username);
+    const profile = await this.usersService.getProfile(req.user.id, username);
+    return { profile };
   }
 
   // 3. Theo dõi người dùng
@@ -67,7 +69,8 @@ export class UsersController {
     @Request() req: AuthenticatedRequest,
     @Param('username') username: string,
   ) {
-    return this.usersService.followUser(req.user.id, username);
+    const profile = await this.usersService.followUser(req.user.id, username);
+    return { profile };
   }
 
   // 4. Bỏ theo dõi người dùng
@@ -77,6 +80,7 @@ export class UsersController {
     @Request() req: AuthenticatedRequest,
     @Param('username') username: string,
   ) {
-    return this.usersService.unfollowUser(req.user.id, username);
+    const profile = await this.usersService.unfollowUser(req.user.id, username);
+    return { profile };
   }
 }

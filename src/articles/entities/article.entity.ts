@@ -35,9 +35,8 @@ export class Article {
     @ManyToOne(() => User, (user) => user.articles, { eager: true })
     author: User;
 
-    // Logic tự động sinh slug (URL-friendly) từ title trước khi lưu
+    // Logic tự động sinh slug (URL-friendly) từ title trước khi lưu (chỉ khi Insert)
     @BeforeInsert()
-    @BeforeUpdate()
     generateSlug() {
         if (this.title) {
             // Chuyển thành chữ thường, thay dấu cách bằng gạch ngang, và thêm chuỗi random chống trùng lặp

@@ -42,7 +42,7 @@ const THROTTLE_LIMIT = 5;
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_DATABASE || 'nestjs_tutorial',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: false,
+      synchronize: true,
     }),
 
     I18nModule.forRoot({
