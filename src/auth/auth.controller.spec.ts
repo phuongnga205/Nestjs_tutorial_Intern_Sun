@@ -8,13 +8,9 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        ThrottlerModule.forRoot([{ ttl: 60, limit: 10 }]),
-      ],
+      imports: [ThrottlerModule.forRoot([{ ttl: 60, limit: 10 }])],
       controllers: [AuthController],
-      providers: [
-        { provide: AuthService, useValue: {} },
-      ],
+      providers: [{ provide: AuthService, useValue: {} }],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);

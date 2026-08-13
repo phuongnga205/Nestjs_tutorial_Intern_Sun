@@ -67,8 +67,24 @@ postman/
 
 # SunLint
 .sunlint-eslint.config.js
-
 # Custom ignored files
 NestJS Tutorial DB.session.sql
 public/
+
+eslint.config.mjs
+.prettierrc
+
+# Database Sessions
+*.session.sql
+
+# Uploaded Files
 public/uploads/
+
+# Temporary and test files
+*.test
+*.ts.test
+*.bak
+*.tmp
+*.swp
+*~
+.DS_Store

@@ -1,0 +1,5 @@
+{
+  "USER_NOT_FOUND": "Không tìm thấy người dùng này",
+  "CURRENT_USER_NOT_FOUND": "Không tìm thấy User hiện tại",
+  "CANNOT_FOLLOW_SELF": "Bạn không thể tự follow chính mình"
+}
