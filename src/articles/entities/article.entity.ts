@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeInsert } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, BeforeInsert, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity('articles')
 export class Article {
@@ -43,4 +44,7 @@ export class Article {
             this.slug = this.title.toLowerCase().replace(/\s+/g, '-') + '-' + Math.random().toString(36).substring(2, 8);
         }
     }
+
+    @OneToMany(() => Comment, (comment) => comment.article)
+    comments: Comment[];
 }

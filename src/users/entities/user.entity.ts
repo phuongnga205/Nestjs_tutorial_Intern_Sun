@@ -9,6 +9,7 @@ import {
   OneToMany
 } from 'typeorm';
 import { Article } from '../../articles/entities/article.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 
 @Entity('users')
 export class User {
@@ -60,4 +61,7 @@ export class User {
   @ManyToMany(() => Article)
   @JoinTable({ name: 'user_favorites' }) // Tên bảng trung gian
   favorites: Article[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments: Comment[];
 }
